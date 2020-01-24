@@ -28,18 +28,20 @@ import RxSwift
  */
 
 let bag = DisposeBag()
-
+let backgroundScheduler = ConcurrentDispatchQueueScheduler(queue: DispatchQueue.global())
 Observable.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
-   .filter { num -> Bool in
-      print(Thread.isMainThread ? "Main Thread" : "Background Thread", ">> filter")
-      return num.isMultiple(of: 2)
-   }
-   .map { num -> Int in
-      print(Thread.isMainThread ? "Main Thread" : "Background Thread", ">> map")
-      return num * 2
-   }
-
-
-
-
-
+  .subscribeOn(MainScheduler.instance)
+  .filter { num -> Bool in
+    print(Thread.isMainThread ? "Main Thread" : "Background Thread", ">> filter")
+    return num.isMultiple(of: 2)
+}
+.observeOn(backgroundScheduler)
+.map { num -> Int in
+  print(Thread.isMainThread ? "Main Thread" : "Background Thread", ">> map")
+  return num * 2
+}
+.observeOn(MainScheduler.instance)
+.subscribe {
+  print(Thread.isMainThread ? "Main Thread" : "Background Thread", ">> subscribe")
+}
+  .disposed(by: bag)
