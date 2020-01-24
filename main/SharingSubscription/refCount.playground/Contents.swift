@@ -28,29 +28,24 @@ import RxSwift
  */
 
 let bag = DisposeBag()
-let source = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance).debug().publish()
+let source = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+  .debug()
+  .publish()
+  .refCount()
 
 let observer1 = source
-   .subscribe { print("🔵", $0) }
+  .subscribe { print("🔵", $0) }
 
-source.connect()
+//source.connect()
 
 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-   observer1.dispose()
+  observer1.dispose()
 }
 
 DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
-   let observer2 = source.subscribe { print("🔴", $0) }
-
-   DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-      observer2.dispose()
-   }
+  let observer2 = source.subscribe { print("🔴", $0) }
+  
+  DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+    observer2.dispose()
+  }
 }
-
-
-
-
-
-
-
-
