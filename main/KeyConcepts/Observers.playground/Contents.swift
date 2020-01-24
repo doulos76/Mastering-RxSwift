@@ -27,7 +27,7 @@ import RxSwift
  # Observers
  */
 
-Observable<Int>.create { (observer) -> Disposable in
+let o1 = Observable<Int>.create { (observer) -> Disposable in
    observer.on(.next(0))
    observer.onNext(1)
    
@@ -36,23 +36,22 @@ Observable<Int>.create { (observer) -> Disposable in
    return Disposables.create()
 }
 
+// #1
+o1.subscribe {
+  print("== Start ==")
+  print($0)
+  if let elem = $0.element {
+    print(elem)
+  }
+  print("== End ==")
+}
 
+print("---------------------")
+// #2
+o1.subscribe(onNext: { elem in
+  print(elem)
+})
+
+//: ** Observable에서 event난 한 번에 하나씩만 전달됨.(중요!!!)
 
 Observable.from([1, 2, 3])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
