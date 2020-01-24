@@ -27,14 +27,25 @@ import RxSwift
  # amb
  */
 
-let bag = DisposeBag()
+let disposeBag = DisposeBag()
 
 enum MyError: Error {
-   case error
+  case error
 }
 
 let a = PublishSubject<String>()
 let b = PublishSubject<String>()
 let c = PublishSubject<String>()
 
-
+//a.amb(b)
+Observable.amb([a, b, c])
+  .subscribe { print($0) }
+  .disposed(by: disposeBag)
+c.onNext("C")
+a.onNext("A")
+b.onNext("B")
+a.onNext("AA")
+b.onNext("BB")
+b.onNext("BBB")
+b.onCompleted()
+a.onCompleted()
