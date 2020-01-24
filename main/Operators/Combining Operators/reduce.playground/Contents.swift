@@ -27,21 +27,23 @@ import RxSwift
  # reduce
  */
 
-let bag = DisposeBag()
+let disposeBag = DisposeBag()
 
 enum MyError: Error {
-   case error
+  case error
 }
 
-let o = Observable.range(start: 1, count: 5)
+let o = Observable.range(start: 1, count: 10)
 
 print("== scan")
 
 o.scan(0, accumulator: +)
-   .subscribe { print($0) }
-   .disposed(by: bag)
+  .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
 print("== reduce")
 
-
+o.reduce(0, accumulator: +)
+  .subscribe { print($0) }
+  .disposed(by: disposeBag)
 

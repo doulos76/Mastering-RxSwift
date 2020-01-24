@@ -27,12 +27,26 @@ import RxSwift
  # sample
  */
 
-let bag = DisposeBag()
+let disposeBag = DisposeBag()
 
 enum MyError: Error {
-   case error
+  case error
 }
 
 let trigger = PublishSubject<Void>()
 let data = PublishSubject<String>()
 
+//data.withLatestFrom(trigger)
+data.sample(trigger)
+  .subscribe { print($0) }
+  .disposed(by: disposeBag)
+
+trigger.onNext(())
+data.onNext("Hello")
+trigger.onNext(())
+trigger.onNext(())
+
+//data.onCompleted()
+//trigger.onNext(())
+
+data.onError(MyError.error)

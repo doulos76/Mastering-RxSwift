@@ -27,8 +27,18 @@ import RxSwift
  # concat
  */
 
-let bag = DisposeBag()
+let disposeBag = DisposeBag()
 let fruits = Observable.from(["🍏", "🍎", "🥝", "🍑", "🍋", "🍉"])
 let animals = Observable.from(["🐶", "🐱", "🐹", "🐼", "🐯", "🐵"])
 
+Observable.concat([fruits, animals])
+  .subscribe { print($0) }
+  .disposed(by: disposeBag)
 
+fruits.concat(animals)
+  .subscribe { print($0) }
+  .disposed(by: disposeBag)
+
+animals.concat(fruits)
+.subscribe { print($0) }
+.disposed(by: disposeBag)

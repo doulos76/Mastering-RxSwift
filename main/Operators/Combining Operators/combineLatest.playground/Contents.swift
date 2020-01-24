@@ -34,6 +34,21 @@ enum MyError: Error {
 }
 
 let greetings = PublishSubject<String>()
-let languages = PublishSubject<String>()
+let languages = BehaviorSubject<String>(value: "RxSwift")
 
+Observable.combineLatest(greetings, languages) { lhs, rhs -> String in
+  return "\(lhs) \(rhs)"
+}
+  .subscribe { print($0) }
+  .disposed(by: bag)
 
+greetings.onNext("Hello")
+languages.onNext("Swift")
+greetings.onNext("Hi")
+languages.onNext("SwiftUI")
+languages.onNext("Objective-C")
+
+greetings.onCompleted()
+languages.onNext("Combine")
+//languages.onError(MyError.error)
+languages.onCompleted()

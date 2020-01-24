@@ -27,12 +27,28 @@ import RxSwift
  # zip
  */
 
-let bag = DisposeBag()
+let disposeBag = DisposeBag()
 
 enum MyError: Error {
-   case error
+  case error
 }
 
 let numbers = PublishSubject<Int>()
 let strings = PublishSubject<String>()
+
+Observable.zip(numbers, strings) { "\($0) - \($1)" }
+  .subscribe { print($0) }
+  .disposed(by: disposeBag)
+
+numbers.onNext(1)
+strings.onNext("One")
+
+numbers.onNext(2)
+strings.onNext("Two")
+//numbers.onCompleted()
+numbers.onError(MyError.error)
+
+strings.onNext("Three")
+strings.onCompleted()
+
 
